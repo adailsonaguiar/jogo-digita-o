@@ -1,8 +1,9 @@
 const textArea = document.querySelector('textarea');
 const buttonRestart = document.querySelector('.restart');
 const theTimer = document.querySelector('.timer');
-const suggestedText = document.querySelector('#test-area p').innerHTML;
+const currentText = document.querySelector('#test-area p');
 timer = [3, 0, 0, 0];
+var suggestedText = '';
 var interval;
 var timeRunning = false;
 
@@ -39,6 +40,7 @@ function start() {
 function spellCheck() {
   let textEntered = textArea.value.trim().toLocaleLowerCase();
 
+  console.log(suggestedText);
   let origintextMatch = suggestedText
     .trim()
     .substring(0, textEntered.length)
@@ -67,3 +69,12 @@ function restart() {
 textArea.addEventListener('keypress', start, false);
 textArea.addEventListener('keyup', spellCheck, false);
 buttonRestart.addEventListener('click', restart, false);
+
+fetch('https://allugofrases.herokuapp.com/frases/random', {
+  method: 'GET',
+}).then((value) => {
+  value.json().then((value) => {
+    currentText.innerHTML = value.frase;
+    suggestedText = value.frase;
+  });
+});
